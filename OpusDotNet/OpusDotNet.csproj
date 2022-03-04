@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId />
+    <Version>1.0.0</Version>
+    <UserSecretsId>39caacd0-baf2-412b-bd39-0ca8565d2cf8</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  	<OutputPath>$(SolutionDir)Build\Debug\bin\OpusDotNet</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Build\Debug\obj\OpusDotNet</IntermediateOutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  	<OutputPath>$(SolutionDir)Build\Release\bin\OpusDotNet</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Build\Release\obj\OpusDotNet</IntermediateOutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="lib\license.txt" />
+    <None Remove="license.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="lib\opus.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

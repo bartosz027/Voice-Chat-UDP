@@ -31,8 +31,10 @@ namespace Client2 {
 
             _Recorder = new AudioRecorder();
             _Recorder.StartRecording((sender, args) => {
+                byte[] data = _Recorder.EncodeAudio(args.Buffer);
+
                 foreach (var receiver in _Receivers) {
-                    SendVoiceUDP(args.Buffer, receiver.ExternalEndPoint);
+                    SendVoiceUDP(data, receiver.ExternalEndPoint);
                 }
             });
         }
@@ -226,7 +228,9 @@ namespace Client2 {
                     break;
                 }
                 default: {
-                    _Recorder.AddDataToBuffer(data);
+                    byte[] decoded_data = _Recorder.DecodeAudio(data);
+                    _Recorder.PlayVoice(decoded_data);
+
                     break;
                 }
             }
@@ -237,6 +241,7 @@ namespace Client2 {
         private TcpClient _ClientTCP = new TcpClient();
         private UdpClient _ClientUDP = new UdpClient();
 
+        // Clients
         private ClientInfo _Client;
         private List<ClientInfo> _Receivers;
 
