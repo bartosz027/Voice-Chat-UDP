@@ -86,9 +86,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpusDotNet\OpusDotNet.csproj">
-      <Project>{977ef02f-149f-4c69-b77c-6372dfce7b25}</Project>
-      <Name>OpusDotNet</Name>
+    <ProjectReference Include="..\OpusWrapper\OpusWrapper.csproj">
+      <Project>{686634db-d3c9-494e-a233-b0cee34c30c5}</Project>
+      <Name>OpusWrapper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

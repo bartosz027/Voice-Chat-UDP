@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace OpusDotNet
-{
+namespace OpusWrapper {
+
     /// <summary>
     /// Provides audio decoding with Opus.
     /// </summary>
-    public class OpusDecoder : IDisposable
-    {
+    public class OpusDecoder : IDisposable {
         private readonly SafeDecoderHandle _handle;
+
         // Number of samples in the frame size, per channel.
         private readonly int _samples;
         private readonly int _pcmLength;
@@ -17,8 +17,8 @@ namespace OpusDotNet
         /// <summary>
         /// Initializes a new <see cref="OpusDecoder"/> instance, with 48000 Hz sample rate and 2 channels.
         /// </summary>
-        public OpusDecoder() : this(60, 48000, 2, false)
-        {
+        public OpusDecoder() : this(60, 48000, 2, false) {
+
         }
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace OpusDotNet
         /// </summary>
         /// <param name="frameSize">The frame size used when encoding, 2.5, 5, 10, 20, 40 or 60 ms.</param>
         [Obsolete("This constructor was used for the old decode method and is deprecated, please use the new decode method instead.")]
-        public OpusDecoder(double frameSize) : this(frameSize, 48000, 2, true)
-        {
+        public OpusDecoder(double frameSize) : this(frameSize, 48000, 2, true) {
+
         }
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace OpusDotNet
         /// </summary>
         /// <param name="sampleRate">The sample rate to decode to, 48000, 24000, 16000, 12000 or 8000 Hz.</param>
         /// <param name="channels">The channels to decode to, mono or stereo.</param>
-        public OpusDecoder(int sampleRate, int channels) : this(60, sampleRate, channels, false)
-        {
+        public OpusDecoder(int sampleRate, int channels) : this(60, sampleRate, channels, false) {
+
         }
 
         /// <summary>
@@ -46,14 +46,12 @@ namespace OpusDotNet
         /// <param name="sampleRate">The sample rate to decode to, 48000, 24000, 16000, 12000 or 8000 Hz.</param>
         /// <param name="channels">The channels to decode to, mono or stereo.</param>
         [Obsolete("This constructor was used for the old decode method and is deprecated, please use the new decode method instead.")]
-        public OpusDecoder(double frameSize, int sampleRate, int channels) : this(frameSize, sampleRate, channels, true)
-        {
+        public OpusDecoder(double frameSize, int sampleRate, int channels) : this(frameSize, sampleRate, channels, true) {
+
         }
 
-        private OpusDecoder(double frameSize, int sampleRate, int channels, bool frameSizeWasSpecified)
-        {
-            switch (frameSize)
-            {
+        private OpusDecoder(double frameSize, int sampleRate, int channels, bool frameSizeWasSpecified) {
+            switch (frameSize) {
                 case 2.5:
                 case 5:
                 case 10:
@@ -65,8 +63,7 @@ namespace OpusDotNet
                     throw new ArgumentException("Value must be one of the following: 2.5, 5, 10, 20, 40 or 60.", nameof(frameSize));
             }
 
-            switch (sampleRate)
-            {
+            switch (sampleRate) {
                 case 8000:
                 case 12000:
                 case 16000:
@@ -77,13 +74,11 @@ namespace OpusDotNet
                     throw new ArgumentException("Value must be one of the following: 8000, 12000, 16000, 24000 or 48000.", nameof(sampleRate));
             }
 
-            if (channels < 1 || channels > 2)
-            {
+            if (channels < 1 || channels > 2) {
                 throw new ArgumentOutOfRangeException(nameof(channels), "Value must be between 1 and 2.");
             }
 
-            if (frameSizeWasSpecified)
-            {
+            if (frameSizeWasSpecified) {
                 FrameSize = frameSize;
             }
 
@@ -119,13 +114,12 @@ namespace OpusDotNet
         /// (by calling <see cref="Decode(byte[], int, out int)"/> with null and -1 as the arguments).
         /// </summary>
         [Obsolete("This property was used for the old decode method and is deprecated, please use the new decode method instead.")]
-        public bool FEC
-        {
-            get => _fec;
-            set
-            {
-                if (FrameSize == null)
-                {
+        public bool FEC {
+            get {
+                return _fec;
+            }
+            set {
+                if (FrameSize == null){
                     throw new InvalidOperationException("A frame size has to be specified in the constructor for FEC to work.");
                 }
 
@@ -142,20 +136,16 @@ namespace OpusDotNet
         /// <param name="decodedLength">The length of the decoded audio.</param>
         /// <returns>A byte array containing the decoded audio.</returns>
         [Obsolete("This method is deprecated, please use the new decode method instead.")]
-        public unsafe byte[] Decode(byte[] opusBytes, int length, out int decodedLength)
-        {
-            if (opusBytes == null && !FEC)
-            {
+        public unsafe byte[] Decode(byte[] opusBytes, int length, out int decodedLength) {
+            if (opusBytes == null && !FEC) {
                 throw new ArgumentNullException(nameof(opusBytes), "Value cannot be null when FEC is disabled.");
             }
 
-            if (length < 0 && (!FEC || opusBytes != null))
-            {
+            if (length < 0 && (!FEC || opusBytes != null)) {
                 throw new ArgumentOutOfRangeException(nameof(length), $"Value cannot be negative when {nameof(opusBytes)} is not null or FEC is disabled.");
             }
 
-            if (opusBytes != null && opusBytes.Length < length)
-            {
+            if (opusBytes != null && opusBytes.Length < length) {
                 throw new ArgumentOutOfRangeException(nameof(length), $"Value cannot be greater than the length of {nameof(opusBytes)}.");
             }
 
@@ -164,18 +154,14 @@ namespace OpusDotNet
             byte[] pcmBytes = new byte[_pcmLength];
             int result;
 
-            fixed (byte* input = opusBytes)
-            fixed (byte* output = pcmBytes)
-            {
+            fixed (byte* input = opusBytes) fixed (byte* output = pcmBytes) {
                 var inputPtr = (IntPtr)input;
                 var outputPtr = (IntPtr)output;
 
-                if (opusBytes != null)
-                {
+                if (opusBytes != null) {
                     result = API.opus_decode(_handle, inputPtr, length, outputPtr, _samples, 0);
                 }
-                else
-                {
+                else {
                     // If forward error correction is enabled, this will indicate a packet loss.
                     result = API.opus_decode(_handle, IntPtr.Zero, 0, outputPtr, _samples, FEC ? 1 : 0);
                 }
@@ -196,39 +182,31 @@ namespace OpusDotNet
         /// <param name="pcmLength">The maximum number of bytes to write to <paramref name="pcmBytes"/>.
         /// When using FEC (forward error correction) this must be a valid frame size that matches the duration of the missing audio.</param>
         /// <returns>The number of bytes written to <paramref name="pcmBytes"/>.</returns>
-        public unsafe int Decode(byte[] opusBytes, int opusLength, byte[] pcmBytes, int pcmLength)
-        {
-            if (opusLength < 0 && opusBytes != null)
-            {
+        public unsafe int Decode(byte[] opusBytes, int opusLength, byte[] pcmBytes, int pcmLength) {
+            if (opusLength < 0 && opusBytes != null) {
                 throw new ArgumentOutOfRangeException(nameof(opusLength), $"Value cannot be negative when {nameof(opusBytes)} is not null.");
             }
 
-            if (opusBytes != null && opusBytes.Length < opusLength)
-            {
+            if (opusBytes != null && opusBytes.Length < opusLength) {
                 throw new ArgumentOutOfRangeException(nameof(opusLength), $"Value cannot be greater than the length of {nameof(opusBytes)}.");
             }
 
-            if (pcmBytes == null)
-            {
+            if (pcmBytes == null) {
                 throw new ArgumentNullException(nameof(pcmBytes));
             }
 
-            if (pcmLength < 0)
-            {
+            if (pcmLength < 0) {
                 throw new ArgumentOutOfRangeException(nameof(pcmLength), "Value cannot be negative.");
             }
 
-            if (pcmBytes.Length < pcmLength)
-            {
+            if (pcmBytes.Length < pcmLength) {
                 throw new ArgumentOutOfRangeException(nameof(pcmLength), $"Value cannot be greater than the length of {nameof(pcmBytes)}.");
             }
 
             double frameSize = API.GetFrameSize(pcmLength, SampleRate, Channels);
 
-            if (opusBytes == null)
-            {
-                switch (frameSize)
-                {
+            if (opusBytes == null) {
+                switch (frameSize) {
                     case 2.5:
                     case 5:
                     case 10:
@@ -246,18 +224,14 @@ namespace OpusDotNet
             int result;
             int samples = API.GetSampleCount(frameSize, SampleRate);
 
-            fixed (byte* input = opusBytes)
-            fixed (byte* output = pcmBytes)
-            {
+            fixed (byte* input = opusBytes) fixed (byte* output = pcmBytes) {
                 var inputPtr = (IntPtr)input;
                 var outputPtr = (IntPtr)output;
 
-                if (opusBytes != null)
-                {
+                if (opusBytes != null) {
                     result = API.opus_decode(_handle, inputPtr, opusLength, outputPtr, samples, 0);
                 }
-                else
-                {
+                else {
                     // If forward error correction is enabled, this will indicate a packet loss.
                     result = API.opus_decode(_handle, IntPtr.Zero, 0, outputPtr, samples, 1);
                 }
@@ -270,17 +244,15 @@ namespace OpusDotNet
         /// <summary>
         /// Releases all resources used by the current instance.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             _handle?.Dispose();
         }
 
-        private void ThrowIfDisposed()
-        {
-            if (_handle.IsClosed)
-            {
+        private void ThrowIfDisposed() {
+            if (_handle.IsClosed) {
                 throw new ObjectDisposedException(GetType().FullName);
             }
         }
     }
+
 }

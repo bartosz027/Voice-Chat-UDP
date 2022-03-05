@@ -1,10 +1,9 @@
-﻿namespace OpusDotNet
-{
+﻿namespace OpusWrapper {
+
     /// <summary>
     /// Specifies the bandpasses.
     /// </summary>
-    public enum Bandwidth
-    {
+    public enum Bandwidth {
         /// <summary>
         /// 4 kHz passband.
         /// </summary>
@@ -26,4 +25,5 @@
         /// </summary>
         FullBand = 1105
     }
+
 }

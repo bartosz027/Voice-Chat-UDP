@@ -1,10 +1,9 @@
-﻿namespace OpusDotNet
-{
+﻿namespace OpusWrapper {
+
     /// <summary>
     /// Specifies the modes for forced mono/stereo.
     /// </summary>
-    public enum ForceChannels
-    {
+    public enum ForceChannels {
         /// <summary>
         /// Not forced.
         /// </summary>
@@ -18,4 +17,5 @@
         /// </summary>
         Stereo = 2
     }
+
 }

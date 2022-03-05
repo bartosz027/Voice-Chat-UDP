@@ -1,22 +1,20 @@
 ﻿using System;
 
-namespace OpusDotNet
-{
+namespace OpusWrapper {
+
     /// <summary>
     /// Provides audio encoding with Opus.
     /// </summary>
-    public class OpusEncoder : IDisposable
-    {
+    public class OpusEncoder : IDisposable {
         private readonly SafeEncoderHandle _handle;
-
         private int _bitrate;
 
         /// <summary>
         /// Initializes a new <see cref="OpusEncoder"/> instance, with the specified intended application, 48000 Hz sample rate and 2 channels.
         /// </summary>
         /// <param name="application">The intended application.</param>
-        public OpusEncoder(Application application) : this(application, 48000, 2)
-        {
+        public OpusEncoder(Application application) : this(application, 48000, 2) {
+
         }
 
         /// <summary>
@@ -25,15 +23,12 @@ namespace OpusDotNet
         /// <param name="application">The intended application.</param>
         /// <param name="sampleRate">The sample rate in the input audio, 48000, 24000, 16000, 12000 or 8000 Hz.</param>
         /// <param name="channels">The channels in the input audio, mono or stereo.</param>
-        public OpusEncoder(Application application, int sampleRate, int channels)
-        {
-            if (!Enum.IsDefined(typeof(Application), application))
-            {
+        public OpusEncoder(Application application, int sampleRate, int channels) {
+            if (!Enum.IsDefined(typeof(Application), application)) {
                 throw new ArgumentException("Value is not defined in the enumeration.", nameof(application));
             }
 
-            switch (sampleRate)
-            {
+            switch (sampleRate) {
                 case 8000:
                 case 12000:
                 case 16000:
@@ -44,8 +39,7 @@ namespace OpusDotNet
                     throw new ArgumentException("Value must be one of the following: 8000, 12000, 16000, 24000 or 48000.", nameof(sampleRate));
             }
 
-            if (channels < 1 || channels > 2)
-            {
+            if (channels < 1 || channels > 2) {
                 throw new ArgumentOutOfRangeException(nameof(channels), "Value must be between 1 and 2.");
             }
 
@@ -81,13 +75,12 @@ namespace OpusDotNet
         /// Gets or sets the bitrate, 8000 - 512000 bps.
         /// </summary>
         [Obsolete("This property was used for the old encode method and is deprecated, please use the new encode method instead.")]
-        public int Bitrate
-        {
-            get => _bitrate;
-            set
-            {
-                if (value < 8000 || value > 512000)
-                {
+        public int Bitrate {
+            get {
+                return _bitrate;
+            }
+            set {
+                if (value < 8000 || value > 512000) {
                     throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 8000 and 512000.");
                 }
 
@@ -98,19 +91,18 @@ namespace OpusDotNet
         /// <summary>
         /// Gets or sets whether VBR (variable bitrate) is enabled.
         /// </summary>
-        public bool VBR
-        {
-            get
-            {
+        public bool VBR {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetVBR, out int value);
                 API.ThrowIfError(result);
 
                 return value == 1;
             }
-            set
-            {
+            set {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetVBR, value ? 1 : 0);
                 API.ThrowIfError(result);
             }
@@ -119,24 +111,22 @@ namespace OpusDotNet
         /// <summary>
         /// Gets or sets the maximum bandpass.
         /// </summary>
-        public Bandwidth MaxBandwidth
-        {
-            get
-            {
+        public Bandwidth MaxBandwidth {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetMaxBandwidth, out int value);
                 API.ThrowIfError(result);
 
                 return (Bandwidth)value;
             }
-            set
-            {
-                if (!Enum.IsDefined(typeof(Bandwidth), value))
-                {
+            set {
+                if (!Enum.IsDefined(typeof(Bandwidth), value)) {
                     throw new ArgumentException("Value is not defined in the enumeration.", nameof(value));
                 }
 
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetMaxBandwidth, (int)value);
                 API.ThrowIfError(result);
             }
@@ -145,24 +135,22 @@ namespace OpusDotNet
         /// <summary>
         /// Gets or sets the computational complexity, 0 - 10. Decreasing this will decrease CPU time, at the expense of quality.
         /// </summary>
-        public int Complexity
-        {
-            get
-            {
+        public int Complexity {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetComplexity, out int value);
                 API.ThrowIfError(result);
 
                 return value;
             }
-            set
-            {
-                if (value < 0 || value > 10)
-                {
+            set {
+                if (value < 0 || value > 10) {
                     throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 10.");
                 }
 
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetComplexity, value);
                 API.ThrowIfError(result);
             }
@@ -172,19 +160,18 @@ namespace OpusDotNet
         /// Gets or sets whether to use FEC (forward error correction). You need to adjust <see cref="ExpectedPacketLoss"/>
         /// before FEC takes effect.
         /// </summary>
-        public bool FEC
-        {
-            get
-            {
+        public bool FEC {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetInbandFEC, out int value);
                 API.ThrowIfError(result);
 
                 return value == 1;
             }
-            set
-            {
+            set {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetInbandFEC, value ? 1 : 0);
                 API.ThrowIfError(result);
             }
@@ -194,24 +181,22 @@ namespace OpusDotNet
         /// Gets or sets the expected packet loss percentage when using FEC (forward error correction). Increasing this will
         /// improve quality under loss, at the expense of quality in the absence of packet loss.
         /// </summary>
-        public int ExpectedPacketLoss
-        {
-            get
-            {
+        public int ExpectedPacketLoss {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetPacketLossPerc, out int value);
                 API.ThrowIfError(result);
 
                 return value;
             }
-            set
-            {
-                if (value < 0 || value > 100)
-                {
+            set {
+                if (value < 0 || value > 100) {
                     throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 100.");
                 }
 
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetPacketLossPerc, value);
                 API.ThrowIfError(result);
             }
@@ -221,19 +206,18 @@ namespace OpusDotNet
         /// Gets or sets whether to use DTX (discontinuous transmission). When enabled the encoder will produce
         /// packets with a length of 2 bytes or less during periods of no voice activity.
         /// </summary>
-        public bool DTX
-        {
-            get
-            {
+        public bool DTX {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetDTX, out int value);
                 API.ThrowIfError(result);
 
                 return value == 1;
             }
-            set
-            {
+            set {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetDTX, value ? 1 : 0);
                 API.ThrowIfError(result);
             }
@@ -242,24 +226,22 @@ namespace OpusDotNet
         /// <summary>
         /// Gets or sets the forced mono/stereo mode.
         /// </summary>
-        public ForceChannels ForceChannels
-        {
-            get
-            {
+        public ForceChannels ForceChannels {
+            get {
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.GetForceChannels, out int value);
                 API.ThrowIfError(result);
 
                 return (ForceChannels)value;
             }
-            set
-            {
-                if (!Enum.IsDefined(typeof(ForceChannels), value))
-                {
+            set {
+                if (!Enum.IsDefined(typeof(ForceChannels), value)) {
                     throw new ArgumentException("Value is not defined in the enumeration.", nameof(value));
                 }
 
                 ThrowIfDisposed();
+
                 int result = API.opus_encoder_ctl(_handle, (int)Control.SetForceChannels, (int)value);
                 API.ThrowIfError(result);
             }
@@ -273,27 +255,22 @@ namespace OpusDotNet
         /// <param name="encodedLength">The length of the encoded audio.</param>
         /// <returns>A byte array containing the encoded audio.</returns>
         [Obsolete("This method is deprecated, please use the new encode method instead.")]
-        public unsafe byte[] Encode(byte[] pcmBytes, int length, out int encodedLength)
-        {
-            if (pcmBytes == null)
-            {
+        public unsafe byte[] Encode(byte[] pcmBytes, int length, out int encodedLength) {
+            if (pcmBytes == null) {
                 throw new ArgumentNullException(nameof(pcmBytes));
             }
 
-            if (length < 0)
-            {
+            if (length < 0) {
                 throw new ArgumentOutOfRangeException(nameof(length), "Value cannot be negative.");
             }
 
-            if (pcmBytes.Length < length)
-            {
+            if (pcmBytes.Length < length) {
                 throw new ArgumentOutOfRangeException(nameof(length), $"Value cannot be greater than the length of {nameof(pcmBytes)}.");
             }
 
             double frameSize = API.GetFrameSize(length, SampleRate, Channels);
 
-            switch (frameSize)
-            {
+            switch (frameSize) {
                 case 2.5:
                 case 5:
                 case 10:
@@ -312,11 +289,10 @@ namespace OpusDotNet
 
             int samples = API.GetSampleCount(frameSize, SampleRate);
 
-            fixed (byte* input = pcmBytes)
-            fixed (byte* output = opusBytes)
-            {
+            fixed (byte* input = pcmBytes) fixed (byte* output = opusBytes) {
                 var inputPtr = (IntPtr)input;
                 var outputPtr = (IntPtr)output;
+
                 result = API.opus_encode(_handle, inputPtr, samples, outputPtr, opusBytes.Length);
             }
 
@@ -335,42 +311,34 @@ namespace OpusDotNet
         /// <param name="opusLength">The maximum number of bytes to write to <paramref name="opusBytes"/>.
         /// This will determine the bitrate in the encoded audio.</param>
         /// <returns>The number of bytes written to <paramref name="opusBytes"/>.</returns>
-        public unsafe int Encode(byte[] pcmBytes, int pcmLength, byte[] opusBytes, int opusLength)
-        {
-            if (pcmBytes == null)
-            {
+        public unsafe int Encode(byte[] pcmBytes, int pcmLength, byte[] opusBytes, int opusLength) {
+            if (pcmBytes == null) {
                 throw new ArgumentNullException(nameof(pcmBytes));
             }
 
-            if (pcmLength < 0)
-            {
+            if (pcmLength < 0) {
                 throw new ArgumentOutOfRangeException(nameof(pcmLength), "Value cannot be negative.");
             }
 
-            if (pcmBytes.Length < pcmLength)
-            {
+            if (pcmBytes.Length < pcmLength) {
                 throw new ArgumentOutOfRangeException(nameof(pcmLength), $"Value cannot be greater than the length of {nameof(pcmBytes)}.");
             }
 
-            if (opusBytes == null)
-            {
+            if (opusBytes == null) {
                 throw new ArgumentNullException(nameof(opusBytes));
             }
 
-            if (opusLength < 0)
-            {
+            if (opusLength < 0) {
                 throw new ArgumentOutOfRangeException(nameof(opusLength), "Value cannot be negative.");
             }
 
-            if (opusBytes.Length < opusLength)
-            {
+            if (opusBytes.Length < opusLength) {
                 throw new ArgumentOutOfRangeException(nameof(opusLength), $"Value cannot be greater than the length of {nameof(opusBytes)}.");
             }
 
             double frameSize = API.GetFrameSize(pcmLength, SampleRate, Channels);
 
-            switch (frameSize)
-            {
+            switch (frameSize) {
                 case 2.5:
                 case 5:
                 case 10:
@@ -387,11 +355,10 @@ namespace OpusDotNet
             int result;
             int samples = API.GetSampleCount(frameSize, SampleRate);
 
-            fixed (byte* input = pcmBytes)
-            fixed (byte* output = opusBytes)
-            {
+            fixed (byte* input = pcmBytes) fixed (byte* output = opusBytes) {
                 var inputPtr = (IntPtr)input;
                 var outputPtr = (IntPtr)output;
+
                 result = API.opus_encode(_handle, inputPtr, samples, outputPtr, opusLength);
             }
 
@@ -402,17 +369,15 @@ namespace OpusDotNet
         /// <summary>
         /// Releases all resources used by the current instance.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             _handle?.Dispose();
         }
 
-        private void ThrowIfDisposed()
-        {
-            if (_handle.IsClosed)
-            {
+        private void ThrowIfDisposed() {
+            if (_handle.IsClosed) {
                 throw new ObjectDisposedException(GetType().FullName);
             }
         }
     }
+
 }

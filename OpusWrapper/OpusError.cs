@@ -1,10 +1,9 @@
-﻿namespace OpusDotNet
-{
+﻿namespace OpusWrapper {
+
     /// <summary>
     /// Specifies the possible errors when using Opus.
     /// </summary>
-    public enum OpusError
-    {
+    public enum OpusError {
         /// <summary>
         /// One or more invalid/out of range arguments.
         /// </summary>
@@ -34,4 +33,5 @@
         /// </summary>
         AllocFail = -7,
     }
+
 }

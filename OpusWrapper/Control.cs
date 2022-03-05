@@ -1,7 +1,6 @@
-﻿namespace OpusDotNet
-{
-    internal enum Control
-    {
+﻿namespace OpusWrapper {
+
+    internal enum Control {
         SetBitrate = 4002,
         //GetBitrate = 4003,
 
@@ -26,4 +25,5 @@
         SetForceChannels = 4022,
         GetForceChannels = 4023
     }
+
 }

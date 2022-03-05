@@ -1,10 +1,9 @@
-﻿namespace OpusDotNet
-{
+﻿namespace OpusWrapper {
+
     /// <summary>
     /// Specifies the intended applications.
     /// </summary>
-    public enum Application
-    {
+    public enum Application {
         /// <summary>
         /// Process signal for improved speech intelligibility.
         /// </summary>
@@ -18,4 +17,5 @@
         /// </summary>
         RestrictedLowDelay = 2051
     }
+
 }

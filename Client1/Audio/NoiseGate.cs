@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Client1.Audio {
 
     // Source: https://github.com/jagger2048/Dynamics-processor
+    // File: NoiseGate.h
     class NoiseGate {
         public NoiseGate() {
 			SetNoiseGate(48000, 0.005, 0.25, 0.0005, -32);

@@ -213,6 +213,7 @@ namespace Client1 {
 
                     client.ID = long.Parse(data[1]);
                     client.Username = data[2];
+
                     client.InternalEndPoint = new IPEndPoint(IPAddress.Parse(internal_ip), int.Parse(internal_port));
                     client.ExternalEndPoint = new IPEndPoint(IPAddress.Parse(external_ip), int.Parse(external_port));
 

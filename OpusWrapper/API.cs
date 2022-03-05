@@ -2,12 +2,10 @@
 using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 
-namespace OpusDotNet
-{
-    internal static class API
-    {
-        // Encoder
+namespace OpusWrapper {
 
+    internal static class API {
+        // Encoder
         [DllImport("lib/opus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern SafeEncoderHandle opus_encoder_create(int Fs, int channels, int application, out int error);
 
@@ -24,8 +22,8 @@ namespace OpusDotNet
         [DllImport("lib/opus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int opus_encoder_ctl(SafeEncoderHandle st, int request, int value);
 
-        // Decoder
 
+        // Decoder
         [DllImport("lib/opus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern SafeDecoderHandle opus_decoder_create(int Fs, int channels, out int error);
 
@@ -36,31 +34,27 @@ namespace OpusDotNet
         [DllImport("lib/opus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int opus_decode(SafeDecoderHandle st, IntPtr data, int len, IntPtr pcm, int frame_size, int decode_fec);
 
-        // Helper Methods
 
-        public static int GetSampleCount(double frameSize, int sampleRate)
-        {
+        // Helper Methods
+        public static int GetSampleCount(double frameSize, int sampleRate) {
             // Number of samples per channel.
             return (int)(frameSize * sampleRate / 1000);
         }
 
-        public static int GetPCMLength(int samples, int channels)
-        {
+        public static int GetPCMLength(int samples, int channels) {
             // 16-bit audio contains a sample every 2 (16 / 8) bytes, so we multiply by 2.
             return samples * channels * 2;
         }
 
-        public static double GetFrameSize(int pcmLength, int sampleRate, int channels)
-        {
+        public static double GetFrameSize(int pcmLength, int sampleRate, int channels) {
             return (double)pcmLength / sampleRate / channels / 2 * 1000;
         }
 
-        public static void ThrowIfError(int result)
-        {
-            if (result < 0)
-            {
+        public static void ThrowIfError(int result) {
+            if (result < 0) {
                 throw new OpusException(result);
             }
         }
     }
+
 }

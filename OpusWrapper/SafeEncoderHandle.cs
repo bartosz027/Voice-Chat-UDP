@@ -2,21 +2,20 @@
 using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
 
-namespace OpusDotNet
-{
-    internal sealed class SafeDecoderHandle : SafeHandle
-    {
-        private SafeDecoderHandle() : base(IntPtr.Zero, true)
-        {
-        }
+namespace OpusWrapper {
 
+    internal sealed class SafeEncoderHandle : SafeHandle {
         public override bool IsInvalid => handle == IntPtr.Zero;
 
+        private SafeEncoderHandle() : 
+            base(IntPtr.Zero, true) {
+        }
+
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        protected override bool ReleaseHandle()
-        {
-            API.opus_decoder_destroy(handle);
+        protected override bool ReleaseHandle() {
+            API.opus_encoder_destroy(handle);
             return true;
         }
     }
+
 }

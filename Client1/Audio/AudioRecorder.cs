@@ -4,7 +4,7 @@ using System.Linq;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
-using OpusDotNet;
+using OpusWrapper;
 
 namespace Client1.Audio {
 

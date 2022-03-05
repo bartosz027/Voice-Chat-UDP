@@ -1,18 +1,17 @@
 ﻿using System;
 
-namespace OpusDotNet
-{
+namespace OpusWrapper {
+
     /// <summary>
     /// The exception that is thrown when an Opus error occurs.
     /// </summary>
-    public class OpusException : Exception
-    {
+    public class OpusException : Exception {
         /// <summary>
         /// Initializes a new <see cref="OpusException"/> instance, with the specified Opus error code.
         /// </summary>
         /// <param name="errorCode">The Opus error code.</param>
-        public OpusException(int errorCode) : base(GetMessage((OpusError)errorCode))
-        {
+        public OpusException(int errorCode) : 
+            base(GetMessage((OpusError)errorCode)) {
             Error = (OpusError)errorCode;
         }
 
@@ -21,10 +20,8 @@ namespace OpusDotNet
         /// </summary>
         public OpusError Error { get; }
 
-        private static string GetMessage(OpusError error)
-        {
-            switch (error)
-            {
+        private static string GetMessage(OpusError error) {
+            switch (error) {
                 case OpusError.BadArg:
                     return "One or more invalid/out of range arguments.";
                 case OpusError.BufferTooSmall:
@@ -44,4 +41,5 @@ namespace OpusDotNet
             }
         }
     }
+
 }
