@@ -75,7 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioRecorder.cs" />
+    <Compile Include="Audio\AudioRecorder.cs" />
+    <Compile Include="Audio\NoiseGate.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

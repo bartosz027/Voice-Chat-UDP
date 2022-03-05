@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Client1.Audio;
+
 namespace Client1 {
 
     class ClientInfo {
@@ -30,11 +32,14 @@ namespace Client1 {
             _Client.Username = Environment.MachineName;
 
             _Recorder = new AudioRecorder();
+            _NoiseGate = new NoiseGate();
+
             _Recorder.StartRecording((sender, args) => {
-                byte[] data = _Recorder.EncodeAudio(args.Buffer);
+                byte[] data = _NoiseGate.ApplyNoiseGate(args.Buffer);
+                data = _Recorder.EncodeAudio(data);
 
                 foreach (var receiver in _Receivers) {
-                    SendVoiceUDP(data, receiver.ExternalEndPoint);
+                    SendVoiceUDP(data, receiver.InternalEndPoint);
                 }
             });
         }
@@ -247,6 +252,7 @@ namespace Client1 {
 
         // Audio
         private AudioRecorder _Recorder;
+        private NoiseGate _NoiseGate;
     }
 
 }

@@ -6,7 +6,7 @@ using NAudio.Wave.SampleProviders;
 
 using OpusDotNet;
 
-namespace Client1 {
+namespace Client2.Audio {
 
     class AudioRecorder {
         public AudioRecorder() {
