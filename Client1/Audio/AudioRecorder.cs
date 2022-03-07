@@ -12,14 +12,14 @@ namespace Client1.Audio {
         public AudioRecorder() {
             // Opus
             _Encoder = new OpusEncoder(Application.VoIP, _SampleRate, _NumberOfChannels);
-            _EncodedByteArray = new byte[_BufferMilliseconds * (_SampleRate * _BitsPerSample * _NumberOfChannels / 8000)];
+            _EncodedByteArray = new byte[_BufferMilliseconds * (_Bitrate / 8000)];
 
             _Decoder = new OpusDecoder(_SampleRate, _NumberOfChannels);
             _DecodedByteArray = new byte[_BufferMilliseconds * (_SampleRate * _BitsPerSample * _NumberOfChannels / 8000)];
 
             // NAudio
             _AudioBuffer = new BufferedWaveProvider(new WaveFormat(_SampleRate, _BitsPerSample, _NumberOfChannels));
-            _AudioBuffer.BufferLength = 250 * (_SampleRate * _BitsPerSample * _NumberOfChannels / 8000); // 250ms voice buffer
+            _AudioBuffer.BufferLength = 250 * (_SampleRate * _BitsPerSample * _NumberOfChannels / 8000);
             _AudioBuffer.DiscardOnBufferOverflow = true;
 
             var volumeSampleProvider = new VolumeSampleProvider(_AudioBuffer.ToSampleProvider());
@@ -28,7 +28,7 @@ namespace Client1.Audio {
             _AudioSink = new WaveOut();
             _AudioSink.Init(volumeSampleProvider);
 
-            _AudioSink.Volume = 0.5f; // 0.0f - 0% volume, 0.5f - 100% volume, 1.0f - 200% volume
+            _AudioSink.Volume = 1.0f;
             _AudioSink.Play();
         }
 
@@ -65,6 +65,8 @@ namespace Client1.Audio {
 
         private OpusDecoder _Decoder;
         private byte[] _DecodedByteArray;
+
+        private int _Bitrate = 96000;
 
         // Record voice
         private WaveInEvent _AudioSource;
