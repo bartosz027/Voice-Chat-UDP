@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{686634DB-D3C9-494E-A233-B0CEE34C30C5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>OpusWrapper</RootNamespace>
-    <AssemblyName>OpusWrapper</AssemblyName>
+    <ProjectGuid>{8ED81341-A85D-438B-93F3-593C7E49296F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Server</RootNamespace>
+    <AssemblyName>Server</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -18,25 +18,21 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Build\Debug\bin\OpusWrapper</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Build\Debug\obj\OpusWrapper</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)build\Debug\bin\Server</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)build\Debug\obj\Server</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Build\Release\bin\OpusWrapper</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Build\Release\obj\OpusWrapper</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)build\Release\bin\Server</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)build\Release\obj\Server</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -49,26 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API.cs" />
-    <Compile Include="Application.cs" />
-    <Compile Include="Bandwidth.cs" />
-    <Compile Include="Control.cs" />
-    <Compile Include="ForceChannels.cs" />
-    <Compile Include="OpusDecoder.cs" />
-    <Compile Include="OpusEncoder.cs" />
-    <Compile Include="OpusError.cs" />
-    <Compile Include="OpusException.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SafeDecoderHandle.cs" />
-    <Compile Include="SafeEncoderHandle.cs" />
+    <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\opus.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client2 {
+﻿namespace Client {
 
     class Program {
         static void Main(string[] args) {
             var client = new Client();
             client.ConnectToServer();
 
-            var key = Console.ReadKey(true).KeyChar;
+            var key = System.Console.ReadKey(true).KeyChar;
             client.JoinVoiceChannel(key);
 
+            if (args.Length > 0) {
+                client.MuteVoiceChannel(args[0]);
+            }
+
             while (true) {
-                Console.ReadLine();
+                System.Console.ReadLine();
             }
         }
     }

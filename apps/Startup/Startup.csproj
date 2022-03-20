@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8ED81341-A85D-438B-93F3-593C7E49296F}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Server</RootNamespace>
-    <AssemblyName>Server</AssemblyName>
+    <ProjectGuid>{BA199D96-F6A7-4F93-B039-130372E537EA}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Startup</RootNamespace>
+    <AssemblyName>Startup</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -18,8 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>$(SolutionDir)Build\Debug\bin\Server</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Build\Debug\obj\Server</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)build\Debug\bin\Startup</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)build\Debug\obj\Startup</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,11 +28,14 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)Build\Release\bin\Server</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)Build\Release\obj\Server</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)build\Release\bin\Startup</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)build\Release\obj\Startup</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,10 +50,23 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\OpusWrapper\OpusWrapper.csproj">
+      <Project>{686634db-d3c9-494e-a233-b0cee34c30c5}</Project>
+      <Name>OpusWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Client.csproj">
+      <Project>{270bc064-13d0-4bf2-aa7d-897ee7f0118a}</Project>
+      <Name>Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Project>{8ed81341-a85d-438b-93f3-593c7e49296f}</Project>
+      <Name>Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

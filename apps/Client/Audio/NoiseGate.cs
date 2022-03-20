@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Client.Audio {
 
-namespace Client1.Audio {
+    using System;
 
     // Source: https://github.com/jagger2048/Dynamics-processor
     // File: NoiseGate.h

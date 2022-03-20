@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Client2.Audio;
+using Client.Audio;
 
-namespace Client2 {
+namespace Client {
 
     class ClientInfo {
         // Client data
@@ -39,13 +39,13 @@ namespace Client2 {
                 data = _Recorder.EncodeAudio(data);
 
                 foreach (var receiver in _Receivers) {
-                    SendVoiceUDP(data, receiver.ExternalEndPoint);
+                    SendVoiceUDP(data, receiver.InternalEndPoint);
                 }
             });
         }
 
         public void ConnectToServer() {
-            var ep = new IPEndPoint(IPAddress.Parse("85.193.246.112"), 65535);
+            var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 65535);
 
             // Init TCP
             _ClientTCP = new TcpClient();
@@ -69,6 +69,7 @@ namespace Client2 {
             SendMessageTCP("CONNECT_TCP" + "|" + _Client.ID + "|" + _Client.Username + "|" + _Client.InternalEndPoint);
         }
 
+
         public void JoinVoiceChannel(char key) {
             switch (key) {
                 case '1': {
@@ -79,6 +80,18 @@ namespace Client2 {
                     SendMessageTCP("JOIN_CHANNEL" + "|" + "2");
                     break;
                 }
+            }
+        }
+
+        public void MuteVoiceChannel(string value) {
+            if(value == "true") {
+                _VoiceChannelMuted = true;
+            }
+            else if (value == "false") {
+                _VoiceChannelMuted = false;
+            }
+            else {
+                throw new ArgumentException();
             }
         }
 
@@ -146,6 +159,7 @@ namespace Client2 {
             }
         }
 
+
         public void SendVoiceUDP(byte[] data, IPEndPoint ep) {
             try {
                 if (data != null) {
@@ -153,7 +167,7 @@ namespace Client2 {
                 }
             }
             catch (Exception e) {
-                Console.WriteLine("Error on UDP Send: " + e.Message);
+                Console.WriteLine("Error on UDP Voice Send: " + e.Message);
             }
         }
 
@@ -234,8 +248,10 @@ namespace Client2 {
                     break;
                 }
                 default: {
-                    byte[] decoded_data = _Recorder.DecodeAudio(data);
-                    _Recorder.PlayVoice(decoded_data);
+                    if(_VoiceChannelMuted == false) {
+                        byte[] decoded_data = _Recorder.DecodeAudio(data);
+                        _Recorder.PlayVoice(decoded_data);
+                    }
 
                     break;
                 }
@@ -254,6 +270,8 @@ namespace Client2 {
         // Audio
         private AudioRecorder _Recorder;
         private NoiseGate _NoiseGate;
+
+        private bool _VoiceChannelMuted = false;
     }
 
 }
