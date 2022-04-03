@@ -5,8 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 
 using System.Text;
-
-using System.Threading;
 using System.Threading.Tasks;
 
 using Client.Audio;
@@ -60,7 +58,6 @@ namespace Client {
 
             // Init communication
             SendMessageUDP("CONNECT_UDP" + "|" + _Client.ID + "|" + _Client.Username, ep);
-            Thread.Sleep(500);
 
             var ep1 = _ClientTCP.Client.LocalEndPoint as IPEndPoint;
             var ep2 = _ClientUDP.Client.LocalEndPoint as IPEndPoint;

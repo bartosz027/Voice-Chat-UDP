@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Sockets;
 
 using System.Text;
+
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server {
@@ -86,33 +88,38 @@ namespace Server {
             switch(data[0]) {
                 case "CONNECT_TCP": {
                     var id = long.Parse(data[1]);
-                    var connected_client = _ConnectedClients.Find(p => (p.ID == id));
+                    var client = _Clients.Find(p => (p.ID == id));
+
+                    while (client == null) {
+                        Thread.Sleep(250);
+                        client = _Clients.Find(p => (p.ID == id));
+                    }
 
                     var ip = data[3].Split(':')[0];
                     var port = data[3].Split(':')[1];
 
-                    connected_client.Client = tcp_client;
-                    connected_client.Stream = tcp_client.GetStream();
+                    client.TCP = tcp_client;
+                    client.Stream = tcp_client.GetStream();
 
-                    connected_client.InternalEndPoint = new IPEndPoint(IPAddress.Parse(ip), int.Parse(port));
+                    client.InternalEndPoint = new IPEndPoint(IPAddress.Parse(ip), int.Parse(port));
                     SendTCP("TEST_TCP" + "|" + "TCP Communication Test", tcp_client);
 
                     break;
                 }
                 case "JOIN_CHANNEL": {
-                    var connected_client = _ConnectedClients.Find(p => (p.Client == tcp_client));
+                    var client = _Clients.Find(p => (p.TCP == tcp_client));
                     var channel = _VoiceChannels.Find(p => p.ID == int.Parse(data[1]));
 
-                    if(!channel.Clients.Contains(connected_client)) {
+                    if(!channel.Clients.Contains(client)) {
                         var response_data = "";
-                        var broadcast_data = "CLIENT_JOINED_TO_VOICE_CHANNEL" + "|" + connected_client.ID + "|" + connected_client.Username + "|" + connected_client.InternalEndPoint + "|" + connected_client.ExternalEndPoint;
+                        var broadcast_data = "CLIENT_JOINED_TO_VOICE_CHANNEL" + "|" + client.ID + "|" + client.Username + "|" + client.InternalEndPoint + "|" + client.ExternalEndPoint;
 
-                        foreach (var client in channel.Clients) {
-                            response_data += "|" + client.ID + "|" + client.Username + "|" + client.InternalEndPoint + "|" + client.ExternalEndPoint;
-                            SendTCP(broadcast_data, client.Client);
+                        foreach (var channel_client in channel.Clients) {
+                            response_data += "|" + channel_client.ID + "|" + channel_client.Username + "|" + channel_client.InternalEndPoint + "|" + channel_client.ExternalEndPoint;
+                            SendTCP(broadcast_data, channel_client.TCP);
                         }
 
-                        channel.Clients.Add(connected_client);
+                        channel.Clients.Add(client);
                         SendTCP("CONNECTED_TO_VOICE_CHANNEL" + response_data, tcp_client);
                     }
 
@@ -132,7 +139,7 @@ namespace Server {
                     client.Username = data[2];
                     client.ExternalEndPoint = ep;
 
-                    _ConnectedClients.Add(client);
+                    _Clients.Add(client);
                     SendUDP("TEST_UDP" + "|" + "UDP Communication Test", client.ExternalEndPoint);
 
                     break;
@@ -164,8 +171,8 @@ namespace Server {
         private static IPEndPoint _IPEndPointUDP = new IPEndPoint(IPAddress.Any, 65535);
         private UdpClient _ServerUDP = new UdpClient(_IPEndPointUDP);
 
-        // Voice channels
-        private List<ConnectedClient> _ConnectedClients = new List<ConnectedClient>();
+        // Other
+        private List<ConnectedClient> _Clients = new List<ConnectedClient>();
         private List<VoiceChannel> _VoiceChannels = new List<VoiceChannel>();
     }
 
@@ -175,7 +182,7 @@ namespace Server {
         public string Username { get; set; }
 
         // TCP connection
-        public TcpClient Client { get; set; }
+        public TcpClient TCP { get; set; }
         public NetworkStream Stream { get; set; }
 
         // UDP connection
